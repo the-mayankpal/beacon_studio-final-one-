@@ -14,6 +14,9 @@ import noiseBg from '@/public/assets/svg/noise.svg';
 import { CursorIcon, AnthropicIcon, N8nIcon, PythonIcon, OpenAIIcon, TelegramIcon } from '@/src/components/Icons';
 import { NetworkAnimation } from '@/src/components/ui/network-animation';
 import { TestimonialSlider } from '@/src/components/ui/testimonial-slider';
+import { MarqueeSection } from '@/src/components/ui/marquee-section';
+import { WaitlistCTA } from '@/src/components/ui/WaitlistCTA';
+import { FadeIn } from '@/src/components/ui/FadeIn';
 
 const services = [
   { 
@@ -92,6 +95,7 @@ const AnimatedNumber = ({ value, suffix = "", startAnimation = false }: Animated
 
   return <motion.span className="font-sans">{rounded}</motion.span>;
 };
+
 
 const HeroContent = () => (
   <div className="relative min-h-screen flex flex-col overflow-hidden bg-black">
@@ -179,22 +183,14 @@ const MiniStatsSection = () => {
 
   return (
     <div ref={ref} className="w-full max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16 py-10 sm:py-14 relative z-10">
-      {/* Premium Film Grain Effect */}
-      <div 
-        className="absolute inset-0 pointer-events-none opacity-[0.05] mix-blend-overlay z-0" 
-        style={{ 
-          backgroundImage: `url(${noiseBg.src})`,
-          backgroundRepeat: 'repeat',
-        }}
-      ></div>
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-10 relative z-10">
-        <div className="max-w-lg">
+        <FadeIn className="max-w-lg">
           <p className="text-white text-lg sm:text-xl font-sans font-medium leading-relaxed">
             You know what? Agents don't ask for breaks.
           </p>
-        </div>
+        </FadeIn>
 
-        <div className="flex flex-col sm:flex-row gap-10 sm:gap-16 w-full md:w-auto">
+        <FadeIn delay={0.2} className="flex flex-col sm:flex-row gap-10 sm:gap-16 w-full md:w-auto">
           <div className="flex flex-col border-l border-white/10 pl-6">
             <span className="text-[11px] font-bold tracking-widest text-gray-400 font-sans uppercase mb-1">Faster</span>
             <span className="text-5xl sm:text-6xl font-medium text-white font-sans tracking-tight"><AnimatedNumber value={10} suffix="x" startAnimation={isInView} /></span>
@@ -207,7 +203,7 @@ const MiniStatsSection = () => {
             <span className="text-[11px] font-bold tracking-widest text-gray-400 font-sans uppercase mb-1">Availability</span>
             <span className="text-5xl sm:text-6xl font-medium text-white font-sans tracking-tight"><AnimatedNumber value={24} suffix="/7" startAnimation={isInView} /></span>
           </div>
-        </div>
+        </FadeIn>
       </div>
     </div>
   );
@@ -225,7 +221,6 @@ export default function Home() {
     }, 2500);
     return () => clearInterval(interval);
   }, [isHovering]);
-
   useGSAP(() => {
     if (!cinematicContainer.current) return;
 
@@ -238,30 +233,13 @@ export default function Home() {
       }
     });
 
-    // Stage 1: Word-by-word text reveal — dull to bright, one by one
+    // Word-by-word text reveal — dull to bright, one by one
     tl.to(".reveal-word", {
       opacity: 1,
       stagger: 0.06,
       duration: 0.4,
       ease: "power2.out"
     });
-
-
-
-    // Stage 3: Smooth pull-back cloth effect + slide-in
-    tl.to(".cinematic-section-a", {
-      scale: 0.92,
-      borderRadius: "16px",
-      duration: 1,
-      ease: "power3.inOut",
-      transformOrigin: "center center"
-    }, "transition");
-
-    tl.to(".cinematic-section-b", {
-      left: "0%",
-      duration: 1,
-      ease: "power2.out"
-    }, "transition");
 
   }, { scope: cinematicContainer });
 
@@ -275,150 +253,99 @@ export default function Home() {
         <MiniStatsSection />
       </div>
 
-      <div id="cinematic-track" ref={cinematicContainer} className="relative w-full h-[250vh] bg-[#111]">
-        <div className="sticky top-0 w-full h-screen overflow-hidden">
-          {/* Section A: Text Reveal */}
-          <div className="cinematic-section-a absolute inset-0 w-full h-full bg-black flex items-center justify-center z-0 origin-center">
-            <ScrollRevealSection />
-          </div>
-
-          {/* Section B: Services Grid */}
-          <div className="cinematic-section-b absolute top-0 left-full w-full h-full bg-black z-20 border-l border-white/10">
-            <section className="relative w-full h-full py-24 md:py-32 overflow-hidden flex items-center">
-              {/* Premium Film Grain Effect */}
-              <div 
-                className="absolute inset-0 pointer-events-none opacity-[0.05] mix-blend-overlay z-0" 
-                style={{ 
-                  backgroundImage: `url(${noiseBg.src})`,
-                  backgroundRepeat: 'repeat',
-                }}
-              ></div>
-              
-              <div className="relative z-10 w-full max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-center">
-                  {/* Service Image Preview */}
-                  <div className="lg:h-[500px] min-h-[400px] rounded-xl border border-white/10 flex flex-col justify-end relative overflow-hidden group bg-[#0a0a0a]">
-                    <AnimatePresence mode="wait">
-                      <motion.img 
-                        key={activeService}
-                        initial={{ opacity: 0, scale: 1.05 }}
-                        animate={{ opacity: 0.6, scale: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.8, ease: "easeInOut" }}
-                        src={services[activeService].image} 
-                        alt={services[activeService].title} 
-                        className="absolute inset-0 w-full h-full object-cover"
-                        referrerPolicy="no-referrer"
-                      />
-                    </AnimatePresence>
-                  </div>
-
-                  {/* Service Details Accordion */}
-                  <div 
-                    className="flex flex-col justify-center min-h-[500px] md:min-h-[550px] lg:h-[500px] self-center gap-2 lg:pl-4 w-full"
-                    onMouseEnter={() => setIsHovering(true)}
-                    onMouseLeave={() => setIsHovering(false)}
-                  >
-                    {services.map((item, i) => {
-                      const isActive = i === activeService;
-                      return (
-                        <motion.div 
-                          key={i} 
-                          layout
-                          onClick={() => setActiveService(i)}
-                          className={`relative flex items-center justify-between group cursor-pointer overflow-hidden rounded-xl transition-colors duration-500 ${isActive ? 'bg-white/5 border border-white/10 p-6' : 'bg-transparent border border-transparent p-4'}`}
-                        >
-                          <div className="relative z-10">
-                            <motion.h3 layout className={`text-xl md:text-2xl font-medium tracking-tight transition-colors duration-500 ${isActive ? 'text-white mb-2' : 'text-gray-500'}`}>
-                              {item.title}
-                            </motion.h3>
-                            <AnimatePresence initial={false}>
-                              {isActive && (
-                                <motion.div 
-                                  initial={{ height: 0, opacity: 0 }}
-                                  animate={{ height: 'auto', opacity: 1 }}
-                                  exit={{ height: 0, opacity: 0 }}
-                                  transition={{ duration: 0.3 }}
-                                >
-                                  <p className="text-sm md:text-base text-[#888888] leading-relaxed max-w-md">{item.desc}</p>
-                                </motion.div>
-                              )}
-                            </AnimatePresence>
-                          </div>
-                          <motion.div layout className={`w-10 h-10 rounded-full border flex items-center justify-center transition-all duration-500 relative z-10 shrink-0 ml-4 ${isActive ? 'bg-white text-black border-white' : 'border-white/10 text-gray-500 group-hover:text-white group-hover:border-white/30'}`}>
-                            {isActive ? (
-                              <ArrowRight size={18} />
-                            ) : (
-                              <ArrowUpRight size={18} />
-                            )}
-                          </motion.div>
-                        </motion.div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            </section>
-          </div>
+      {/* Text Reveal Section — pinned while words fill in */}
+      <div id="cinematic-track" ref={cinematicContainer} className="relative w-full h-[200vh] bg-black">
+        <div className="sticky top-0 w-full h-screen overflow-hidden flex items-center justify-center">
+          <ScrollRevealSection />
         </div>
       </div>
 
-      <TestimonialSlider />
-
-      <section className="bg-black py-12 sm:py-24 px-4 sm:px-10 flex justify-center relative z-10">
-        <div className="relative w-full max-w-[1400px] overflow-hidden aspect-square sm:aspect-[21/9] flex items-center justify-center bg-[#0a0a0a] rounded-xl border border-white/10 shadow-2xl">
-          <img 
-            src="/assets/images/footer-bg.jpg" 
-            alt="Dark Abstract" 
-            className="absolute inset-0 w-full h-full object-cover opacity-100"
-            referrerPolicy="no-referrer"
-          />
-          <div className="absolute inset-0 bg-[#0a0a0a] mix-blend-overlay opacity-60"></div>
-          <div className="absolute inset-0 bg-black/50"></div>
-
-          {/* Premium Film Grain Effect */}
-          <div 
-            className="absolute inset-0 pointer-events-none opacity-[0.35] mix-blend-overlay z-10" 
-            style={{ 
-              backgroundImage: `url(${noiseBg.src})`,
-              backgroundRepeat: 'repeat',
-            }}
-          ></div>
-
-          <div className="absolute inset-0 z-10 w-full h-full pointer-events-auto mix-blend-screen opacity-60">
-            <NetworkAnimation particleColor="rgba(255, 255, 255, " lineColor="rgba(255, 255, 255, " />
-          </div>
-
-          <div className="relative z-30 px-8 sm:px-16 md:px-24 max-w-3xl flex flex-col items-center text-center">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium text-white mb-4 leading-tight tracking-tight">
-              Let's make your AI agent
-            </h2>
-            <p className="text-sm sm:text-base text-gray-300 mb-8 max-w-md leading-relaxed">
-              Hit the button below to schedule a meeting or chat with us directly.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-              <button className="bg-white text-black px-8 py-3.5 rounded-full font-medium hover:bg-gray-200 transition-colors flex items-center justify-center gap-2">
-                Book a Call
-              </button>
-              <div className="relative p-[1px] rounded-full overflow-hidden">
-                <div 
-                  className="absolute inset-[-1000%] bg-[conic-gradient(from_0deg,transparent_0_340deg,white_360deg)] animate-spin"
-                  style={{ animationDuration: '3s' }}
-                ></div>
-                <a 
-                  href="https://t.me/mayank01me" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="relative bg-black/90 backdrop-blur-sm text-white px-8 py-3.5 rounded-full font-medium hover:bg-black transition-colors flex items-center justify-center gap-2 w-full h-full"
-                >
-                  <TelegramIcon className="w-5 h-5" />
-                  Telegram Chat
-                </a>
-              </div>
+      {/* Services Section — normal vertical scroll */}
+      <section className="relative w-full bg-black py-16 sm:py-24 md:py-32 overflow-hidden">
+        {/* Premium Film Grain Effect */}
+        <div 
+          className="absolute inset-0 pointer-events-none opacity-[0.05] mix-blend-overlay z-0" 
+          style={{ 
+            backgroundImage: `url(${noiseBg.src})`,
+            backgroundRepeat: 'repeat',
+          }}
+        ></div>
+        
+        <div className="relative z-10 w-full max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-center">
+            {/* Service Image Preview */}
+            <FadeIn>
+            <div className="lg:h-[500px] min-h-[300px] sm:min-h-[400px] rounded-xl border border-white/10 flex flex-col justify-end relative overflow-hidden group bg-[#0a0a0a]">
+              <AnimatePresence mode="wait">
+                <motion.img 
+                  key={activeService}
+                  initial={{ opacity: 0, scale: 1.05 }}
+                  animate={{ opacity: 0.6, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.8, ease: "easeInOut" }}
+                  src={services[activeService].image} 
+                  alt={services[activeService].title} 
+                  className="absolute inset-0 w-full h-full object-cover"
+                  referrerPolicy="no-referrer"
+                />
+              </AnimatePresence>
             </div>
+            </FadeIn>
+
+            {/* Service Details Accordion */}
+            <FadeIn delay={0.15}>
+            <div 
+              className="flex flex-col justify-center min-h-[400px] sm:min-h-[500px] md:min-h-[550px] lg:h-[500px] self-center gap-2 lg:pl-4 w-full"
+              onMouseEnter={() => setIsHovering(true)}
+              onMouseLeave={() => setIsHovering(false)}
+            >
+              {services.map((item, i) => {
+                const isActive = i === activeService;
+                return (
+                  <motion.div 
+                    key={i} 
+                    layout
+                    onClick={() => setActiveService(i)}
+                    className={`relative flex items-center justify-between group cursor-pointer overflow-hidden rounded-xl transition-colors duration-500 ${isActive ? 'bg-white/5 border border-white/10 p-6' : 'bg-transparent border border-transparent p-4'}`}
+                  >
+                    <div className="relative z-10">
+                      <motion.h3 layout className={`text-xl md:text-2xl font-medium tracking-tight transition-colors duration-500 ${isActive ? 'text-white mb-2' : 'text-gray-500'}`}>
+                        {item.title}
+                      </motion.h3>
+                      <AnimatePresence initial={false}>
+                        {isActive && (
+                          <motion.div 
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.3 }}
+                          >
+                            <p className="text-sm md:text-base text-[#888888] leading-relaxed max-w-md">{item.desc}</p>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                    <motion.div layout className={`w-10 h-10 rounded-full border flex items-center justify-center transition-all duration-500 relative z-10 shrink-0 ml-4 ${isActive ? 'bg-white text-black border-white' : 'border-white/10 text-gray-500 group-hover:text-white group-hover:border-white/30'}`}>
+                      {isActive ? (
+                        <ArrowRight size={18} />
+                      ) : (
+                        <ArrowUpRight size={18} />
+                      )}
+                    </motion.div>
+                  </motion.div>
+                );
+              })}
+            </div>
+            </FadeIn>
           </div>
         </div>
       </section>
+
+      <TestimonialSlider />
+
+      <MarqueeSection />
+
+      <WaitlistCTA />
       </div>
 
       <Footer />
